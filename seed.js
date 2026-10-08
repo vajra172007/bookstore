@@ -110,7 +110,17 @@ const books = [
     description: 'The autobiography of Dr. A.P.J. Abdul Kalam, India\'s Missile Man and former President.',
     image: cover('9788173711466'),
     stock: 22,
-  },
+  }, 
+  {
+    title: 'Light From Many Lamps',
+    author: 'Lillian Watson',
+    isbn: '9780671652500',
+    price: 270,
+    category: 'Biography',
+    description: 'A classic treasury of inspiration featuring hundreds of passages and quotations—selected from the wisdom of the ages—offering invaluable insight and guidance on the challenges of daily life',
+    image: cover('9780671652500'),
+    stock: 20,
+  }
 ];
 
 async function seed() {
