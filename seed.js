@@ -125,7 +125,12 @@ const books = [
 
 async function seed() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const mongoUri = process.env.MONGO_URI || process.env.MONGO_DB_URI;
+    if (!mongoUri) {
+      throw new Error('Set MONGO_URI in .env before seeding');
+    }
+
+    await mongoose.connect(mongoUri);
     console.log('Connected to MongoDB');
 
     await Book.deleteMany({});            // remove old books so seeding is repeatable
@@ -134,9 +139,9 @@ async function seed() {
     console.log(`Seeded ${books.length} books successfully`);
   } catch (err) {
     console.error('Seeding failed:', err.message);
+    process.exitCode = 1;
   } finally {
     await mongoose.disconnect();
-    process.exit(0);
   }
 }
 

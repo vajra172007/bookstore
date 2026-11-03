@@ -27,10 +27,16 @@ app.use('/api', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+const mongoUri = process.env.MONGO_URI || process.env.MONGO_DB_URI;
+
+if (!mongoUri) {
+  console.error('MongoDB connection failed: set MONGO_URI in .env');
+  process.exit(1);
+}
 
 // Connect to MongoDB first, then start the server
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(mongoUri)
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {

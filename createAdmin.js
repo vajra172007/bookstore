@@ -11,7 +11,11 @@ async function main() {
     console.log('Usage: node createAdmin.js <email> <password> [name]');
     return;
   }
-  await mongoose.connect(process.env.MONGO_URI);
+  const mongoUri = process.env.MONGO_URI || process.env.MONGO_DB_URI;
+  if (!mongoUri) {
+    throw new Error('Set MONGO_URI in .env before creating an admin');
+  }
+  await mongoose.connect(mongoUri);
   const hash = await bcrypt.hash(password, 10);
   await User.findOneAndUpdate(
     { email: email.toLowerCase().trim() },

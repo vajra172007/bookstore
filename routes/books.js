@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Book = require('../models/Book');
+const { requireAuth, requireRole } = require('../auth');
 
 const router = express.Router();
 
@@ -64,7 +65,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/books - admin adds a new book
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, requireRole('admin', 'staff'), async (req, res) => {
   try {
     const { title, author, isbn, price, category, description, image, stock } = req.body;
 
