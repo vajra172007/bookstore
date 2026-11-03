@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest - Reports</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <div class="container">
+    <h1>Admin: Sales &amp; Inventory Reports</h1>
+    <p class="muted">Log in with an admin or staff account. Figures come live from the database.</p>
+
+    <div class="card">
+      <form id="filterForm" class="report-filter">
+        <div><label for="fromDate">From</label><input type="date" id="fromDate"></div>
+        <div><label for="toDate">To</label><input type="date" id="toDate"></div>
+        <div><label for="threshold">Low-stock at or below</label><input type="number" id="threshold" min="1" max="1000" step="1" value="5"></div>
+        <button type="submit" class="btn">Apply</button>
+        <button type="button" class="btn btn-muted" id="clearBtn">Clear dates</button>
+      </form>
+      <p class="muted" id="rangeNote"></p>
+    </div>
+
+    <div id="status" class="message"></div>
+
+    <div id="reportBody" hidden>
+      <h2>Sales</h2>
+      <p class="muted">Revenue, completed orders and books sold count only orders with status Placed. Cancelled and refunded orders are shown separately.</p>
+      <div class="stat-grid" id="salesStats"></div>
+
+      <div class="card">
+        <h2>Best-selling books</h2>
+        <div id="bestSellers" class="table-wrap"></div>
+      </div>
+
+      <h2>Inventory</h2>
+      <p class="muted">Inventory is the current stock, not affected by the date filter.</p>
+      <div class="stat-grid" id="invStats"></div>
+
+      <div class="card">
+        <h2>Low-stock books</h2>
+        <div id="lowStock" class="table-wrap"></div>
+      </div>
+      <div class="card">
+        <h2>Out-of-stock books</h2>
+        <div id="outStock" class="table-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/admin-reports.js"></script>
+</body>
+</html>

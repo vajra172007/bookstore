@@ -2,11 +2,13 @@
 // Unit tests for the business logic in routes/orders.js  (POST /api/orders)
 // MongoDB is NOT used. The Book, User and Order models are replaced with mocks.
 
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret';
+const jwt = require('jsonwebtoken');
 const request = require('supertest');
 const express = require('express');
 
 // ---------- 1. Mock the models (so no database is needed) ----------
-jest.mock('../models/Book', () => ({ findById: jest.fn() }));
+jest.mock('../models/Book', () => ({ findById: jest.fn(), findOneAndUpdate: jest.fn(), updateOne: jest.fn() }));
 jest.mock('../models/User', () => ({ findById: jest.fn() }));
 jest.mock('../models/Order', () => ({ create: jest.fn() }));
 
@@ -14,6 +16,7 @@ const Book = require('../models/Book');
 const User = require('../models/User');
 const Order = require('../models/Order');
 const ordersRouter = require('../routes/orders');
+const { installFakeBooks } = require('./helpers/fakeBooks');
 
 // ---------- 2. Tiny Express app that only mounts the orders router ----------
 const app = express();
@@ -47,14 +50,14 @@ function makeBook(overrides) {
 
 // Tells the fake Book.findById which books exist in the "database"
 function mockBooksInDatabase(...books) {
-  Book.findById.mockImplementation(async (id) => {
-    return books.find((b) => b._id === id) || null;
-  });
+  installFakeBooks(Book, books);   // findById + atomic stock updates
 }
 
 // Sends POST /api/orders
 function postOrder(body) {
-  return request(app).post('/api/orders').send(body);
+  // Phase 3: placing an order needs a login token; the customer comes from the token
+  const token = jwt.sign({ id: USER_ID, role: 'customer' }, process.env.JWT_SECRET);
+  return request(app).post('/api/orders').set('Authorization', `Bearer ${token}`).send(body);
 }
 
 beforeEach(() => {
@@ -143,7 +146,8 @@ describe('POST /api/orders - normal cases', () => {
     });
 
     expect(book.stock).toBe(7);                    // 10 - 3 Fixed the value
-    expect(book.save).toHaveBeenCalledTimes(1);
+    expect(Book.findOneAndUpdate).toHaveBeenCalledTimes(1);   // one atomic update, not save()
+    expect(book.save).not.toHaveBeenCalled();
   });
 
   test('marks the order paymentStatus as "Paid"', async () => {

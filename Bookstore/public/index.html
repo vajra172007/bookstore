@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <div class="container">
+    <h1>Browse Books</h1>
+
+    <!-- Search + category filter -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by title or author...">
+      <select id="categorySelect">
+        <option value="All">All Categories</option>
+      </select>
+    </div>
+
+    <div id="message" class="message"></div>
+    <div id="bookGrid" class="book-grid"></div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

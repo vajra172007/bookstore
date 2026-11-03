@@ -1,3 +1,4 @@
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret'; // login now signs a token
 // tests/auth.test.js
 // Unit tests for the business logic in routes/auth.js
 // (POST /api/register and POST /api/login)
@@ -19,6 +20,7 @@ jest.mock('bcryptjs', () => ({
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const authRouter = require('../routes/auth');
+const jwt = require('jsonwebtoken');
 
 // ---------- 2. Tiny Express app that only mounts the auth router ----------
 const app = express();
@@ -86,6 +88,17 @@ describe('POST /api/register - normal cases', () => {
     const dataSaved = User.create.mock.calls[0][0];
     expect(dataSaved.password).toBe('hashed-password');
     expect(dataSaved.password).not.toBe('secret123');
+    expect(dataSaved.role).toBe('customer');
+  });
+
+  test('registers the configured admin email with the admin role', async () => {
+    User.findOne.mockResolvedValue(null);
+    bcrypt.hash.mockResolvedValue('hashed-password');
+    User.create.mockResolvedValue({ ...savedUser, email: 'vajra172007@gmail.com' });
+
+    await postRegister({ ...validRegistration, email: ' Vajra172007@gmail.com ' });
+
+    expect(User.create.mock.calls[0][0].role).toBe('admin');
   });
 });
 
@@ -191,6 +204,16 @@ describe('POST /api/login - normal cases', () => {
       email: 'vajra@test.com',
     });
     expect(res.body.user.password).toBeUndefined();
+  });
+
+  test('gives the configured admin email an admin token role', async () => {
+    User.findOne.mockResolvedValue({ ...savedUser, email: 'vajra172007@gmail.com', role: 'customer' });
+    bcrypt.compare.mockResolvedValue(true);
+
+    const res = await postLogin({ email: ' Vajra172007@gmail.com ', password: 'secret123' });
+
+    expect(res.status).toBe(200);
+    expect(jwt.verify(res.body.token, process.env.JWT_SECRET).role).toBe('admin');
   });
 });
 

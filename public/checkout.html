@@ -14,7 +14,7 @@
     <div id="message" class="message"></div>
 
     <div id="checkoutArea" class="checkout-grid">
-      <!-- Shipping address -->
+      <!-- Shipping address and payment -->
       <div class="card">
         <h2>Shipping Address</h2>
         <form id="checkoutForm">
@@ -40,10 +40,17 @@
         </form>
       </div>
 
-      <!-- Order summary -->
+      <!-- Order summary and coupon -->
       <div class="card">
         <h2>Order Summary</h2>
         <div id="summary"></div>
+
+        <label for="couponCode">Coupon code</label>
+        <div class="coupon-row">
+          <input type="text" id="couponCode" placeholder="e.g. SAVE10">
+          <button type="button" class="btn" id="applyCouponBtn">Apply</button>
+        </div>
+        <div id="couponMessage" class="message"></div>
       </div>
     </div>
   </div>

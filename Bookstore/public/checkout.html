@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest - Checkout</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <div class="container">
+    <h1>Checkout</h1>
+    <div id="message" class="message"></div>
+
+    <div id="checkoutArea" class="checkout-grid">
+      <!-- Shipping address -->
+      <div class="card">
+        <h2>Shipping Address</h2>
+        <form id="checkoutForm">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" required>
+
+          <label for="address">Address</label>
+          <textarea id="address" required></textarea>
+
+          <label for="city">City</label>
+          <input type="text" id="city" required>
+
+          <label for="pincode">Pincode</label>
+          <input type="text" id="pincode" required>
+
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" required>
+
+          <button type="submit" class="btn btn-green btn-full" id="payBtn">Pay Now (Fake Payment)</button>
+          <p class="muted center" style="margin-top:8px; font-size:13px;">
+            No real payment is made. This is a demo.
+          </p>
+        </form>
+      </div>
+
+      <!-- Order summary -->
+      <div class="card">
+        <h2>Order Summary</h2>
+        <div id="summary"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

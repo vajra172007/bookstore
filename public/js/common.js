@@ -42,8 +42,11 @@ function showMessage(elementId, text, type) {
 
 // ---------- API helpers ----------
 // Calls the backend and returns JSON. Throws an Error with the server's message on failure.
-async function api(url, options) {
-  const res = await fetch(url, options);
+async function api(url, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  const token = getToken();
+  if (token) headers.Authorization = 'Bearer ' + token; // lets admin-only routes check who is calling
+  const res = await fetch(url, { ...options, headers });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(data.message || 'Something went wrong');
@@ -54,6 +57,15 @@ async function api(url, options) {
 function postJSON(url, body) {
   return api(url, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+// Sends a JSON body with PUT, PATCH or POST
+function sendJSON(url, method, body) {
+  return api(url, {
+    method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
@@ -70,8 +82,17 @@ function getUser() {
 function setUser(user) {
   localStorage.setItem('user', JSON.stringify(user));
 }
+// The login token is sent with API calls that need an admin or logged-in user
+function getToken() {
+  return localStorage.getItem('token');
+}
+function setToken(token) {
+  localStorage.setItem('token', token);
+}
+
 function logout() {
   localStorage.removeItem('user');
+  localStorage.removeItem('token');
   window.location.href = 'index.html';
 }
 
@@ -143,6 +164,9 @@ function renderNavbar() {
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="admin.html">Admin</a>
+        <a href="admin-coupons.html">Coupons</a>
+        <a href="admin-reports.html">Reports</a>
+        ${user ? '<a href="orders.html">Order History</a>' : ''}
         <a href="cart.html">Cart (${count})</a>
         ${userLinks}
       </div>

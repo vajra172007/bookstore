@@ -103,4 +103,32 @@ router.post('/', requireAuth, requireRole('admin', 'staff'), async (req, res) =>
   }
 });
 
+// PATCH /api/books/:id/stock - admin sets the stock of a book (atomic single update)
+// Body: { stock: 25 }
+router.patch('/:id/stock', requireAuth, requireRole('admin', 'staff'), async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid book id' });
+    }
+    const raw = req.body ? req.body.stock : undefined;
+    const stock = Number(raw);
+    const validType = typeof raw === 'number' || (typeof raw === 'string' && raw.trim() !== '');
+    if (!validType || !Number.isInteger(stock) || stock < 0) {
+      return res.status(400).json({ message: 'Stock must be a whole number, 0 or more' });
+    }
+    const book = await Book.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: { stock } },
+      { new: true }
+    );
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+    res.json({ message: 'Stock updated', book });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

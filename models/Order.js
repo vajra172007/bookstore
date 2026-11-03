@@ -11,7 +11,10 @@ const orderSchema = new mongoose.Schema({
       quantity: Number,
     },
   ],
-  total: { type: Number, required: true },
+  subtotal: { type: Number, default: null },          // items before the discount
+  couponCode: { type: String, default: null },         // coupon used, if any
+  discountAmount: { type: Number, default: 0 },        // amount taken off by the coupon
+  total: { type: Number, required: true },             // final amount paid
   shippingAddress: {
     fullName: { type: String, required: true },
     address: { type: String, required: true },
@@ -20,6 +23,13 @@ const orderSchema = new mongoose.Schema({
     phone: { type: String, required: true },
   },
   paymentStatus: { type: String, default: 'Paid' }, // fake payment -> always "Paid"
+  status: { type: String, enum: ['Placed', 'Cancelled', 'Refunded'], default: 'Placed' },
+  stockRestored: { type: Boolean, default: false },   // true once the books went back to stock (never restore twice)
+  stockRestoredAt: { type: Date, default: null },
+  statusChangedAt: { type: Date, default: null },
+  emailStatus: { type: String, default: null },        // sent | preview | failed | skipped (confirmation email)
+  emailAttemptedAt: { type: Date, default: null },
+  emailSentAt: { type: Date, default: null },          // set ONLY when the SMTP server accepted the message
   createdAt: { type: Date, default: Date.now },
 });
 

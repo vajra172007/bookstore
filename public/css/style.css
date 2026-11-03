@@ -103,3 +103,46 @@ td img { width: 50px; height: 70px; object-fit: cover; border-radius: 4px; }
 
 .center { text-align: center; }
 .muted { color: #64748b; }
+/* ---------- Coupons, checkout summary and admin pages ---------- */
+[hidden] { display: none !important; }
+.coupon-row { display: flex; gap: 8px; }
+.coupon-row input { flex: 1; text-transform: uppercase; }
+.summary-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 15px; }
+.summary-line.discount { color: #16a34a; }
+.btn-muted { background: #64748b; }
+.btn-muted:hover { background: #475569; }
+.btn-small { padding: 4px 10px; font-size: 13px; margin-top: 0; }
+.checkbox-label { display: flex; align-items: center; gap: 8px; margin: 14px 0; }
+.checkbox-label input { width: auto; }
+.coupon-layout { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 24px; align-items: start; }
+.table-wrap { overflow-x: auto; }
+.actions { white-space: nowrap; }
+.actions button { margin-right: 4px; }
+@media (max-width: 800px) {
+  .checkout-grid, .coupon-layout { grid-template-columns: 1fr; }
+}
+
+/* ---------- Order history ---------- */
+.order-card { margin-bottom: 20px; }
+.order-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.order-card .btn-small { display: inline-block; margin-top: 10px; }
+@media (max-width: 600px) {
+  .order-card th, .order-card td { padding: 8px 4px; font-size: 14px; }
+}
+
+/* ---------- Reports dashboard ---------- */
+.report-filter { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.report-filter > div { min-width: 150px; }
+.report-filter .btn { margin-top: 0; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 14px 0 20px; }
+.stat { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+.stat-value { font-size: 24px; font-weight: bold; word-break: break-word; }
+.stat-label { color: #64748b; font-size: 14px; margin-top: 4px; }
+.stat-muted .stat-value { color: #64748b; }
+.stat-warn .stat-value { color: #b45309; }
+.stat-bad .stat-value { color: #991b1b; }
+.badge-warn { background: #fef3c7; color: #92400e; }
+@media (max-width: 600px) {
+  .report-filter > div, .report-filter .btn { width: 100%; }
+  .stat-value { font-size: 20px; }
+}

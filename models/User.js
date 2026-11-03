@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   password: { type: String, required: true }, // stored as a bcrypt hash
+  role: { type: String, enum: ['customer', 'admin', 'staff'], default: 'customer' },
 });
 
 module.exports = mongoose.model('User', userSchema);

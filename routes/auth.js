@@ -1,9 +1,15 @@
 // routes/auth.js - register and login
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const router = express.Router();
+const ADMIN_EMAIL = 'vajra172007@gmail.com';
+
+function roleForEmail(email, currentRole = 'customer') {
+  return email === ADMIN_EMAIL ? 'admin' : currentRole;
+}
 
 // POST /api/register
 router.post('/register', async (req, res) => {
@@ -18,8 +24,10 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Prevent duplicate email
-    const existing = await User.findOne({ email: email.toLowerCase().trim() });
+    const existing = await User.findOne({ email: normalizedEmail });
     if (existing) {
       return res.status(400).json({ message: 'Email is already registered' });
     }
@@ -27,7 +35,12 @@ router.post('/register', async (req, res) => {
     // Hash the password with bcrypt (never store plain passwords)
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({ name, email, password: hashedPassword });
+    const user = await User.create({
+      name,
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: roleForEmail(normalizedEmail),
+    });
 
     res.status(201).json({
       message: 'Registration successful',
@@ -52,7 +65,8 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -65,9 +79,17 @@ router.post('/login', async (req, res) => {
 
     // Simple authentication: return the user's info.
     // The frontend will keep it in localStorage.
+    // Signed token that proves who is logged in. Admin routes check it and the role inside it.
+    const token = jwt.sign(
+      { id: user._id, role: roleForEmail(normalizedEmail, user.role) },
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
+    );
+
     res.json({
       message: 'Login successful',
       user: { id: user._id, name: user.name, email: user.email },
+      token,
     });
   } catch (err) {
     console.error(err);

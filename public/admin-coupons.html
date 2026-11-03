@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest - Coupons</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <div class="container">
+    <h1>Admin: Coupons</h1>
+    <p class="muted">Log in with an admin or staff account to manage coupons.</p>
+    <div id="message" class="message"></div>
+
+    <div class="coupon-layout">
+      <div class="card">
+        <h2 id="formTitle">Create coupon</h2>
+        <form id="couponForm">
+          <label for="code">Code</label>
+          <input type="text" id="code" placeholder="e.g. SAVE10" required>
+
+          <label for="description">Description (optional)</label>
+          <input type="text" id="description" placeholder="e.g. Welcome offer">
+
+          <label for="type">Discount type</label>
+          <select id="type">
+            <option value="percentage">Percentage (%)</option>
+            <option value="fixed">Fixed amount (₹)</option>
+          </select>
+
+          <label for="value">Value</label>
+          <input type="number" id="value" min="0.01" step="0.01" required>
+
+          <label for="minPurchase">Minimum purchase (₹)</label>
+          <input type="number" id="minPurchase" min="0" step="0.01" value="0">
+
+          <label for="maxDiscount">Maximum discount (₹, percentage coupons only)</label>
+          <input type="number" id="maxDiscount" min="0.01" step="0.01">
+
+          <label for="validFrom">Valid from (optional)</label>
+          <input type="datetime-local" id="validFrom">
+
+          <label for="validUntil">Valid until (optional)</label>
+          <input type="datetime-local" id="validUntil">
+
+          <label for="usageLimit">Usage limit (blank = unlimited)</label>
+          <input type="number" id="usageLimit" min="0" step="1">
+
+          <label class="checkbox-label"><input type="checkbox" id="active" checked> Active</label>
+
+          <button type="submit" class="btn btn-full" id="saveBtn">Create Coupon</button>
+          <button type="button" class="btn btn-muted btn-full" id="cancelBtn" hidden>Cancel edit</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>All coupons</h2>
+        <div id="couponTable" class="table-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/admin-coupons.js"></script>
+</body>
+</html>
