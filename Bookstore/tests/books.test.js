@@ -5,6 +5,10 @@
 
 const request = require('supertest');
 const express = require('express');
+const jwt = require('jsonwebtoken');
+
+// POST /api/books requires an admin or staff token, so the tests sign one
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret';
 
 jest.mock(
   '../models/Book',
@@ -209,7 +213,8 @@ describe('GET /api/books/:id', () => {
 // =====================================================================
 describe('POST /api/books', () => {
   function post(body) {
-    return request(app).post('/api/books').send(body);
+    const token = jwt.sign({ id: 'admin1', role: 'admin' }, process.env.JWT_SECRET);
+    return request(app).post('/api/books').set('Authorization', ['Bearer', token].join(' ')).send(body);
   }
 
   test('adds a book successfully', async () => {
